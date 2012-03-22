@@ -1,0 +1,179 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Project Information -->
+    <name>tapestry5-ckeditor</name>
+    <groupId>org.helyx.tapestry.ckeditor</groupId>
+    <artifactId>tapestry5-ckeditor</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.java.level>1.6</project.java.level>
+
+        <tapestry.version>5.3.2</tapestry.version>
+        <servlet-api.version>2.5</servlet-api.version>
+        <testng.version>6.4</testng.version>
+
+        <tapestry.service-reloading-enabled>false</tapestry.service-reloading-enabled>
+        <tapestry.execution-mode>development</tapestry.execution-mode>
+    </properties>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/akinsella/tapestry5-ckeditor.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/akinsella/tapestry5-ckeditor.git</developerConnection>
+        <url>https://github.com/akinsella/tapestry5-ckeditor</url>
+    </scm>
+
+    <repositories>
+        <repository>
+          <id>apacheRelease</id>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>false</enabled></snapshots>
+          <url>http://repository.jboss.org/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+          <id>howardlewisship.com</id>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>false</enabled></snapshots>
+          <url>http://howardlewisship.com/repository/</url>
+        </repository>
+        <repository>
+          <id>howardlewisship.com-snapshot</id>
+          <releases><enabled>false</enabled></releases>
+          <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+          <url>http://howardlewisship.com/snapshot-repository</url>
+        </repository>
+        <repository>
+          <id>repository.apache.org-staging</id>
+          <releases><enabled>true</enabled></releases>
+          <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+          <url>https://repository.apache.org/content/groups/staging"</url>
+        </repository>
+    </repositories>
+
+    <build>
+
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-http</artifactId>
+                <version>2.1</version>
+            </extension>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
+    
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.2.2</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.2</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.8.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.12</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>2.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Xms128m -Xmx512m -XX:PermSize=128m -XX:MaxPermSize=256m</argLine>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${basedir}/src/test/conf/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <enableAssertions>true</enableAssertions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Tapestry-Module-Classes>com.plannow.tapestry5.ckeditor.services.CkEditorModule</Tapestry-Module-Classes>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tapestry</groupId>
+            <artifactId>tapestry-core</artifactId>
+            <version>${tapestry.version}</version>
+        </dependency>
+   
+        <dependency>
+            <groupId>org.apache.tapestry</groupId>
+            <artifactId>tapestry-yuicompressor</artifactId>
+            <version>${tapestry.version}</version>
+        </dependency>
+   
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet-api.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

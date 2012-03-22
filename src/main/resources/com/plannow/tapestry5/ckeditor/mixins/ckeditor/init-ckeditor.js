@@ -41,13 +41,27 @@ Tapestry.Initializer.initCKEditor = function(textareaId, textareaName,
 		 * corresponding server side property is updated.
 		 */
 		var ckeditorInstance = CKEDITOR.instances[textareaId];
-		if (ckeditorInstance == undefined)
-			document.stopObserving(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
-					Tapestry.ckeditor.formEventHandlers[textareaId]);
-		else
-			ckeditorInstance.updateElement();
+		if (ckeditorInstance == undefined) {
+            if (document.stopObserving) {
+                document.stopObserving(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
+                    Tapestry.ckeditor.formEventHandlers[textareaId]);
+            }
+            else {
+                $("#" + textareaId).unbind(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
+                    Tapestry.ckeditor.formEventHandlers[textareaId]);
+            }
+        }
+		else {
+            ckeditorInstance.updateElement();
+        }
 	};
 
-	document.observe(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
-			Tapestry.ckeditor.formEventHandlers[textareaId]);
+	if (document.observe) {
+        document.observe(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
+            Tapestry.ckeditor.formEventHandlers[textareaId]);
+    }
+    else {
+        $("#" + textareaId).bind(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
+            Tapestry.ckeditor.formEventHandlers[textareaId]);
+    }
 };

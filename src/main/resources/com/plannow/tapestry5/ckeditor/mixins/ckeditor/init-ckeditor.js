@@ -12,56 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-Tapestry.ckeditor = {
+Tapestry.editor = {
 	formEventHandlers : {}
 };
 
-Tapestry.Initializer.initCKEditor = function(textareaId, textareaName,
-		ckeditorInitJSON) {
+Tapestry.Initializer.initCKEditor = function(textareaId, textareaName, editorInitJSON) {
 
-	/*
-	 * If the textarea with id=ckeditorId cannot be found (probably because if
-	 * tapestry zone update), than destroy it's corresponding ckeditor instance.
-	 */
-	for (ckeditorId in CKEDITOR.instances)
-		if ($(ckeditorId) == undefined)
-			// destroy the ckeditor instance without updating the textarea
-			CKEDITOR.instances[ckeditorId].destroy(true);
+    /*
+     * If the textarea with id=ckeditorId cannot be found (probably because if
+     * tapestry zone update), than destroy it's corresponding ckeditor instance.
+     */
+    for (var editorId in CKEDITOR.instances) {
+        if ($(editorId) == undefined) {
+            // destroy the ckeditor instance without updating the textarea
+            CKEDITOR.instances[editorId].destroy(true);
+        }
+    }
 
 	// init CKEditor for the given textarea
-	CKEDITOR.replace(textareaName, ckeditorInitJSON);
+	CKEDITOR.replace(textareaName, editorInitJSON);
 
-	Tapestry.ckeditor.formEventHandlers[textareaId] = function() {
+	Tapestry.editor.formEventHandlers[textareaId] = function() {
 		/*
 		 * if the ckeditor instance with id=textareaId cannot be found, than it
 		 * has been destroyed so remove the corresponding eventHandler listening
 		 * on FORM_PREPARE_FOR_SUBMIT_EVENT,
-		 * 
+		 *
 		 * else update the textarea before the form is submitted so that the
 		 * corresponding server side property is updated.
 		 */
-		var ckeditorInstance = CKEDITOR.instances[textareaId];
-		if (ckeditorInstance == undefined) {
-            if (document.stopObserving) {
-                document.stopObserving(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
-                    Tapestry.ckeditor.formEventHandlers[textareaId]);
-            }
-            else {
-                $("#" + textareaId).unbind(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
-                    Tapestry.ckeditor.formEventHandlers[textareaId]);
-            }
+		var editor = CKEDITOR.instances[textareaId];
+		if (editor == undefined) {
+            $("#" + textareaId).unbind(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
+                Tapestry.editor.formEventHandlers[textareaId]);
         }
 		else {
-            ckeditorInstance.updateElement();
+            editor.updateElement();
         }
 	};
 
-	if (document.observe) {
-        document.observe(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
-            Tapestry.ckeditor.formEventHandlers[textareaId]);
-    }
-    else {
-        $("#" + textareaId).bind(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
-            Tapestry.ckeditor.formEventHandlers[textareaId]);
-    }
+    $("#" + textareaId).bind(Tapestry.FORM_PREPARE_FOR_SUBMIT_EVENT,
+        Tapestry.editor.formEventHandlers[textareaId]);
+
+
 };
